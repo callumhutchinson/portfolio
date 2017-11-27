@@ -1,1 +1,1 @@
-A repository used to showcase various programming assignmnets.
+A repository used to showcase various programming assignments.

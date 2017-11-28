@@ -32,7 +32,7 @@ soup = bs.BeautifulSoup(source, 'lxml')
 #list of top 5 subreddits
 topreddits = []
 #gets the top 5 subreddits
-for headers in soup.find_all('a')[5:10]:
+for headers in soup.find_all('a')[6:11]:
 	topreddits.append(headers.string)
 
 print("Top 5 subreddits at", time.ctime(), ":\n")
@@ -56,6 +56,8 @@ def list_to_int(in_list):
 		if (i != ","):
 			time_int += i
 	return int(time_int)
+
+#plotter function
 
 #go into each subreddit and pull info
 

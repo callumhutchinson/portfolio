@@ -1,6 +1,6 @@
 import praw
 import bs4 as bs
-import urllib.request
+import urllib2
 import time
 import datetime
 import matplotlib.pyplot as plt
@@ -24,19 +24,32 @@ scraped_data = {'subreddit_name' : subred_name,
 
 #create a BeautifulSoup object from the source code
 hdr = { 'User-Agent' : 'rankingproject' }
-req = urllib.request.Request("https://www.reddit.com", headers=hdr)
-source = urllib.request.urlopen(req).read()
+req = urllib2.Request("https://www.reddit.com", headers=hdr)
+source = urllib2.urlopen(req).read()
 soup = bs.BeautifulSoup(source, 'lxml')
 
 
 #list of top 5 subreddits
 topreddits = []
 #gets the top 5 subreddits
-for headers in soup.find_all('a')[6:11]:
+for headers in soup.find_all('a')[5:10]:
 	topreddits.append(headers.string)
 
-print("Top 5 subreddits at", time.ctime(), ":\n")
-print(topreddits)
+#rectifies some unicode printing of subreddit names
+topreddits = [str(topreddits[x]) for x in range(len(topreddits))]
+
+#fix for changing of index when pulling top subreddits
+#if the index changes causing first subreddit to be 'users' 
+#clear list and start from position 6
+if (topreddits[0] == 'users'):
+	topreddits=[]
+	for headers in soup.find_all('a')[6:11]:
+		topreddits.append(headers.string)
+
+topreddits = [str(topreddits[x]) for x in range(len(topreddits))]
+
+print "Top 5 subreddits at", time.ctime(), ":\n"
+print topreddits
 
 #create a read only reddit instance
 reddit = praw.Reddit(client_id='ah3BLZiKZZVMIQ',
@@ -57,16 +70,14 @@ def list_to_int(in_list):
 			time_int += i
 	return int(time_int)
 
-#plotter function
-
 #go into each subreddit and pull info
 
 for subred in topreddits:
-	print("Scraping ",subred,"...")
+	print "Scraping ",subred,"..."
 	#gets number of people on the subreddit
 	sub_url = "https://www.reddit.com/r/" + subred
-	req = urllib.request.Request(sub_url, headers=hdr)
-	source = urllib.request.urlopen(req).read()
+	req = urllib2.Request(sub_url, headers=hdr)
+	source = urllib2.urlopen(req).read()
 	soup = bs.BeautifulSoup(source, 'lxml')
 	#appends the number of users online now
 	time_str = soup.find("p", class_="users-online").find("span",class_="number").string
@@ -91,9 +102,9 @@ for subred in topreddits:
 df = pd.DataFrame(scraped_data)
 df.to_csv(r'scraped_data.txt', header=None, index=None, sep=' ', mode='a')
 
-print("Data saved to file scraped_data.txt in the format:")
-print("\n")
-print(df.head())
+print "Data saved to file scraped_data.txt in the format:"
+print "\n"
+print df.head()
 
 
 

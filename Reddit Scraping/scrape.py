@@ -52,9 +52,9 @@ print "Top 5 subreddits at", time.ctime(), ":\n"
 print topreddits
 
 #create a read only reddit instance
-reddit = praw.Reddit(client_id='ah3BLZiKZZVMIQ',
-                     client_secret='0e8HB2IAg4lcDOkInk6ohtgqj58',
-                     user_agent='rankingproject')
+reddit = praw.Reddit(client_id='',
+                     client_secret='',
+                     user_agent='')
 
 #get time since post
 def get_time_since_posted(submission):
